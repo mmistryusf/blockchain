@@ -12,9 +12,11 @@ def pin_to_ipfs(data):
 	
 	url = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
 	payload = json.dumps(data)
-	response = request.post(url, data=payload, headers = headers)
+	response = requests.request("POST", url, json=payload, headers = headers)
+	#print(response)
 	if response.status_code == 200:
 		ipfs_hash = response.json()['IpfsHash']
+		print(ipfs_hash)
 		return ipfs_hash
 	else:
 		Exception(f"Failed to pin Json data:{response.text}")
