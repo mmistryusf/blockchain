@@ -24,7 +24,7 @@ def pin_to_ipfs(data):
 def get_from_ipfs(cid,content_type="json"):
 	assert isinstance(cid,str), f"get_from_ipfs accepts a cid in the form of a string"
 	#YOUR CODE HERE	
-	url = f"https://ipfs.io/ipfs/{cid}"
+	url = f"https://gateway.moralisipfs.com/ipfs/{cid}"
 	response = requests.get(url)
 	# if response.status_code == 200:
 	data = response.json()
