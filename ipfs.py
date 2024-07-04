@@ -26,7 +26,7 @@ def get_from_ipfs(cid,content_type="json"):
 	#YOUR CODE HERE	
 	url = f"https://ipfs.io/ipfs/{cid}"
 	response = requests.get(url)
-	if response.status_code == 200:
-		data = response.json()
+	# if response.status_code == 200:
+	data = response.json()
 	assert isinstance(data,dict), f"get_from_ipfs should return a dict"
 	return data
