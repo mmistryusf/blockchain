@@ -16,8 +16,8 @@ def pin_to_ipfs(data):
 	#print(response)
 	if response.status_code == 200:
 		ipfs_hash = response.json()['IpfsHash']
-		print(ipfs_hash)
-		return ipfs_hash
+		
+		return str(ipfs_hash)
 	else:
 		Exception(f"Failed to pin Json data:{response.text}")
 
