@@ -36,7 +36,7 @@ def connect_with_middleware(contract_json):
 	return w3, contract
 
 
-def is_ordered_block(block_num):
+def is_ordered_block(w3, block_num):
 	"""
 	Takes a block number
 	Returns a boolean that tells whether all the transactions in the block are ordered by priority fee
@@ -49,12 +49,17 @@ def is_ordered_block(block_num):
 
 	Conveniently, most type 2 transactions set the gasPrice field to be min( tx.maxPriorityFeePerGas + block.baseFeePerGas, tx.maxFeePerGas )
 	"""
-	w3 = connect_to_eth()
-	connect_with_middleware(w3)
-	block = w3.eth.get_block(block_num)
 	
-	gas_prices = [tx['gasPrice'] for tx in block.transactions]
-	ordered = all(gas_prices[i] >= gas_prices[i+1] for i in range(len(gas_prices) - 1))
+	block = w3.eth.get_block(block_num)
+	priority_fees = []
+	for tx in block.transactions:
+		if tx['type'] == '0x2':
+			priority_fee = min(tx['maxPriorityFeePerGas'], tx['maxFeeePerGas'] - block['baseFeePerGas'])
+		else:
+			priority_fee = tx['gasPrice'] - block['baseFeePerGas'] if 'baseFeePerGas' in block else tx[getPrice]
+		priority_fees.append(priority_fee)
+	
+	ordered = all(gas_pricepriority_feess[i] >= gas_prices[i+1] for i in range(len(priority_fees) - 1))
 
 	return ordered
 
