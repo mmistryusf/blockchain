@@ -29,9 +29,9 @@ def get_ape_info(apeID):
 	data = {'owner': "", 'image': "", 'eyes': "" }
 	
 	#YOUR CODE HERE	
-    owner = contract.functions.ownerOf(apeID).call()
+    owner = contract.functions.ownerOf().call()
 
-    token_uri = contract.functions.tokenURI(apeID).call()
+    token_uri = contract.functions.tokenURI().call()
 
     response = requests.get(token_uri)
     metadata = response.json()
