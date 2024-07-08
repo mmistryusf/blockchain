@@ -17,9 +17,10 @@ with open('/home/codio/workspace/abi.json', 'r') as f:
 
 ############################
 #Connect to an Ethereum node
-api_url = #YOU WILL NEED TO TO PROVIDE THE URL OF AN ETHEREUM NODE
+api_url = f"https://eth-mainnet.g.alchemy.com/v2/aHjLpmrs7sPWfUP0eTjJasfyCVY9o5Pi" #YOU WILL NEED TO TO PROVIDE THE URL OF AN ETHEREUM NODE
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
+contract = web3.eth.contract(address=contract_address, abi=abi)
 
 def get_ape_info(apeID):
 	assert isinstance(apeID,int), f"{apeID} is not an int"
@@ -28,7 +29,18 @@ def get_ape_info(apeID):
 	data = {'owner': "", 'image': "", 'eyes': "" }
 	
 	#YOUR CODE HERE	
+    owner = contract.functions.ownerOf(apeID).call()
 
+    token_uri = contract.functions.tokenURI(apeID).call()
+
+    response = requests.get(token_uri)
+    metadata = response.json()
+
+    image = metadata['image']
+    eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
+    data['owner'] = owner
+    data['image'] = image
+    data['eyes'] = eyes
 	assert isinstance(data,dict), f'get_ape_info{apeID} should return a dict' 
 	assert all( [a in data.keys() for a in ['owner','image','eyes']] ), f"return value should include the keys 'owner','image' and 'eyes'"
 	return data
