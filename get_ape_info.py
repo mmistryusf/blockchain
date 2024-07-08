@@ -29,18 +29,18 @@ def get_ape_info(apeID):
 	data = {'owner': "", 'image': "", 'eyes': "" }
 	
 	#YOUR CODE HERE	
-    owner = contract.functions.ownerOf().call()
-
-    token_uri = contract.functions.tokenURI().call()
-
-    response = requests.get(token_uri)
-    metadata = response.json()
-
-    image = metadata['image']
-    eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
-    data['owner'] = owner
-    data['image'] = image
-    data['eyes'] = eyes
+	owner = contract.functions.ownerOf().call()
+	
+	token_uri = contract.functions.tokenURI().call()
+	
+	response = requests.get(token_uri)
+	metadata = response.json()
+	
+	image = metadata['image']
+	eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
+	data['owner'] = owner
+	data['image'] = image
+	data['eyes'] = eyes
 	assert isinstance(data,dict), f'get_ape_info{apeID} should return a dict' 
 	assert all( [a in data.keys() for a in ['owner','image','eyes']] ), f"return value should include the keys 'owner','image' and 'eyes'"
 	return data
