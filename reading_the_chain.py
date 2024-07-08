@@ -53,7 +53,7 @@ def is_ordered_block(block_num):
 	connect_with_middleware(w3)
 	block = w3.eth.get_block(block_num)
 	
-	gas_prices = [tx['gasPrice'] for tx in block.transactions=True]
+	gas_prices = [tx['gasPrice'] for tx in block.transactions]
 	ordered = all(gas_prices[i] >= gas_prices[i+1] for i in range(len(gas_prices) - 1))
 
 	return ordered
