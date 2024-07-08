@@ -52,12 +52,13 @@ def is_ordered_block(w3, block_num):
 	
 	block = w3.eth.get_block(block_num, full_transactions=True)
 	priority_fees = []
+	
 	for tx in block.transactions:
 		
 		if tx['type'] == 2:
-			priority_fee = min(tx['maxPriorityFeePerGas'], tx['maxFeeePerGas'] - block['baseFeePerGas'])
+			priority_fee = min(tx['maxPriorityFeePerGas'],  tx['maxFeePerGas'])
 		else:
-			priority_fee = tx['gasPrice'] - block['baseFeePerGas'] if 'baseFeePerGas' in block else tx['gasPrice']
+			priority_fee = tx['gasPrice']
 		priority_fees.append(priority_fee)
 	
 	ordered = all(priority_fees[i] >= priority_fees[i+1] for i in range(len(priority_fees) - 1))
