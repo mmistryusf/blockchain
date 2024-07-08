@@ -31,10 +31,12 @@ def get_ape_info(apeID):
 	#YOUR CODE HERE	
 	owner = contract.functions.ownerOf(apeID).call()
 	
+	base_url = f"https://gateway.moralisipfs.com/ipfs/"
 	token_uri = contract.functions.tokenURI(apeID).call()
-	
-	response = requests.get(token_uri)
+	data_url = base_url + token_uri[7:]
+	response = requests.get(data_url)
 	metadata = response.json()
+	
 	
 	image = metadata['image']
 	eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
