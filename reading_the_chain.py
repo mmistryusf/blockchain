@@ -50,16 +50,17 @@ def is_ordered_block(w3, block_num):
 	Conveniently, most type 2 transactions set the gasPrice field to be min( tx.maxPriorityFeePerGas + block.baseFeePerGas, tx.maxFeePerGas )
 	"""
 	
-	block = w3.eth.get_block(block_num)
+	block = w3.eth.get_block(block_num, full_transactions=True)
 	priority_fees = []
 	for tx in block.transactions:
-		if tx['type'] == '0x2':
+		
+		if tx['type'] == 2:
 			priority_fee = min(tx['maxPriorityFeePerGas'], tx['maxFeeePerGas'] - block['baseFeePerGas'])
 		else:
-			priority_fee = tx['gasPrice'] - block['baseFeePerGas'] if 'baseFeePerGas' in block else tx[getPrice]
+			priority_fee = tx['gasPrice'] - block['baseFeePerGas'] if 'baseFeePerGas' in block else tx['gasPrice']
 		priority_fees.append(priority_fee)
 	
-	ordered = all(gas_pricepriority_feess[i] >= gas_prices[i+1] for i in range(len(priority_fees) - 1))
+	ordered = all(priority_fees[i] >= priority_fees[i+1] for i in range(len(priority_fees) - 1))
 
 	return ordered
 
