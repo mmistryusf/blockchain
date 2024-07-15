@@ -18,9 +18,10 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     msg = eth_account.messages.encode_defunct(challenge)
 
 	#YOUR CODE HERE
-    account = eth_account.Account.create()
-    private_key = account.key.hex()
-    eth_addr = account.address
+    sk = "58ba79907fc0bf103b89d9cd25a52ffc1a73112dae7bd01784670627541464d9"
+    private_key =hex(int(sk, 16)) 
+    #eth_addr = account.address
+    eth_addr = "0xeccB3980559C4476Bb5F1f9e572930e8AB683e09"
 
     sig = w3.eth.account.sign_message(msg, private_key=private_key)
     assert eth_account.Account.recover_message(msg,signature=sig.signature.hex()) == eth_addr, f"Failed to sign message properly"
