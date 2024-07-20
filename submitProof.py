@@ -103,7 +103,10 @@ def prove_merkle(merkle_tree, random_indx):
         layer_size = len(layer)
         if random_indx %2 == 0:
             if random_indx + 1 < layer_size:
-                merkle_proof
+                merkle_proof.append(layer[random_indx + 1])
+        else:
+            merkle_proof.append(layer[random_indx -1])
+        random_indx //= 2
 
     return merkle_proof
 
