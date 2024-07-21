@@ -25,7 +25,7 @@ contract Destination is AccessControl {
 	function wrap(address _underlying_token, address _recipient, uint256 _amount ) public onlyRole(WARDEN_ROLE) {
 		//YOUR CODE HERE
     address wrappedTokenAddr = underlying_tokens[_underlying_token];
-    //require(wrappedTokenAddr != address(0), "Token not registered");
+    require(wrappedTokenAddr != address(0), "Wrap Token not registered");
 
     BridgeToken wrappedToken = BridgeToken(wrappedTokenAddr);
     wrappedToken.mint(_recipient, _amount);
@@ -36,7 +36,7 @@ contract Destination is AccessControl {
 	function unwrap(address _wrapped_token, address _recipient, uint256 _amount ) public {
 		//YOUR CODE HERE
     address underlyingTokenAddr = wrapped_tokens[_wrapped_token];
-    //require(underlyingTokenAddr != address(0), "Token not registered");
+    require(underlyingTokenAddr != address(0), "UnWrap Token not registered");
 
     BridgeToken wrappedToken = BridgeToken(_wrapped_token);
     //require(wrappedToken.balanceOf(_recipient) >= _amount, "Insufficient balance");
@@ -54,7 +54,7 @@ require(underlying_tokens[_underlying_token] == address(0), "Token already regis
 
 		underlying_tokens[newTokenAddress] = _underlying_token;
 		wrapped_tokens[_underlying_token] = newTokenAddress;
-		tokens.push(_underlying_token);
+		tokens.push(newTokenAddress);
 		emit Creation(_underlying_token, newTokenAddress);
 		return newTokenAddress;
 	}
