@@ -52,8 +52,8 @@ require(underlying_tokens[_underlying_token] == address(0), "Token already regis
 		BridgeToken newToken = new BridgeToken(_underlying_token, name, symbol, msg.sender);
 		address newTokenAddress = address(newToken);
 
-		underlying_tokens[_underlying_token] = newTokenAddress;
-		wrapped_tokens[newTokenAddress] = _underlying_token;
+		underlying_tokens[newTokenAddress] = _underlying_token;
+		wrapped_tokens[_underlying_token] = newTokenAddress;
 		tokens.push(_underlying_token);
 		emit Creation(_underlying_token, newTokenAddress);
 		return newTokenAddress;
