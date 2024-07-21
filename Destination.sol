@@ -54,7 +54,7 @@ require(underlying_tokens[_underlying_token] == address(0), "Token already regis
 
 		underlying_tokens[newTokenAddress] = _underlying_token;
 		wrapped_tokens[_underlying_token] = newTokenAddress;
-		tokens.push(newTokenAddress);
+		tokens.push(_underlying_token);
 		emit Creation(_underlying_token, newTokenAddress);
 		return newTokenAddress;
 	}
