@@ -46,7 +46,7 @@ contract Destination is AccessControl {
 
 	function createToken(address _underlying_token, string memory name, string memory symbol ) public onlyRole(CREATOR_ROLE) returns(address) {
 		//YOUR CODE HERE
-require(underlying_tokens[_underlying_token] == address(0), "Token already registered);
+require(underlying_tokens[_underlying_token] == address(0), "Token already registered");
 
 		BridgeToken newToken = new BridgeToken(_underlying_token, name, symbol, msg.sender);
 		address newTokenAddress = address(newToken);
