@@ -42,7 +42,7 @@ contract Destination is AccessControl {
     //require(wrappedToken.balanceOf(_recipient) >= _amount, "Insufficient balance");
 
     wrappedToken.burnFrom(msg.sender, _amount);
-emit Unwrap(_wrapped_token, underlyingTokenAddr, _recipient, _recipient, _amount);
+emit Unwrap(underlyingTokenAddr, address(_wrapped_token), msg.sender, _recipient, _amount);
 	}
 
 	function createToken(address _underlying_token, string memory name, string memory symbol ) public onlyRole(CREATOR_ROLE) returns(address) {
