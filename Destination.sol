@@ -28,7 +28,7 @@ contract Destination is AccessControl {
     require(wrappedTokenAddr != address(0), "Wrap Token not registered");
 
     BridgeToken wrappedToken = BridgeToken(wrappedTokenAddr);
-    wrappedToken.mint(_recipient, _amount);
+    wrappedToken.mint(msg.sender, _amount);
 
     emit Wrap(_underlying_token, wrappedTokenAddr, _recipient, _amount);
 	}
