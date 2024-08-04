@@ -54,29 +54,27 @@ def scanBlocks(chain):
     if chain not in ['source','destination']:
         print( f"Invalid chain: {chain}" )
         return
-    if chain == 'source':
-        w3_obj = connectTo('avax')
-    else:
-         w3_obj = connectTo('bsc')
-    #w3_source = connectTo('avax')
-    #w3_destination = connectTo('bsc')
+    
+    w3_src = connectTo('avax')
+    w3_dst = connectTo('bsc')
 
     contract_info = getContractInfo(chain)
-    #source_contract_info = contracts['source']
-    #destination_contract_info = contracts['destination']
+    src_con_info = getContractInfo('source')
+    dst_con_info = getContractInfo('destination')
 
-    my_contract = w3_obj.eth.contract(address = contract_info['address'], abi = contract_info['abi'])
-    
+    src_con = w3_src.eth.contract(address = src_con_info['address'], abi = src_con_info['abi'])
+    dst_con = w3_dst.eth.contract(address = dst_con_info['address'], abi = dst_con_info['abi'])    
 
-    lastest_block = w3_obj.eth.block_number
-    #lastest_block_destination = w3_destination.eth.block_number
-    start_block = lastest_block - 5 if lastest_block > 5 else 0
-    #start_block_destination = lastest_block_destination - 5 if lastest_block_destination > 5 else 0
+    end_block_src = w3_src.eth.block_number
+    end_block_dst = w3_dst.eth.block_number
+    start_block_src = end_block_src - 5 if end_block_src > 5 else 0
+    start_block_dst = end_block_dst - 5 if end_block_dst > 5 else 0
     if chain == 'source':
-        events_data = my_contract.events.Deposit.create_filter(fromBlock=start_block, toBlock=lastest_block).get_all_entries()
+        events_data = src_con.events.Deposit.create_filter(fromBlock=start_block_src, toBlock=end_block_src).get_all_entries()
         for event in events_data:
             token = event['args']['token']
-            recipient = event['args']['amount']
+            recipient = event['args']['recipient']
+            amount = event['args']['amount']
             print(f"Detected Deposit event: {token}, {recipient}, {amount}")
 scanBlocks('source')
 scanBlocks('destination')
