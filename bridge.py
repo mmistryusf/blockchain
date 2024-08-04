@@ -82,5 +82,17 @@ def scanBlocks(chain):
             tx = dst_con.functions.wrap(token, recipient, amount).transact()
             #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
             w3_dst.eth.wait_for_transaction_receipt(tx)
+    else:
+        events_data = dst_con.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock = end_block_dst, argument_filters={}).get_all_entries()
+        
+        for event in events_data:
+            token = event['args']['wrapped_token']
+            recipient = event['args']['recipient']
+            amount = event['args']['amount']
+            print(f"Detected Unwrap event: {token}, {recipient}, {amount}")
+            # call wrap function on the destinatino chain
+            tx = src_con.functions.withdraw(token, recipient, amount).transact()
+            #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
+            w3_wrc.eth.wait_for_transaction_receipt(tx)
 scanBlocks('source')
 scanBlocks('destination')
