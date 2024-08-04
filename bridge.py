@@ -79,8 +79,8 @@ def scanBlocks(chain):
             amount = event['args']['amount']
             print(f"Detected Deposit event: {token}, {recipient}, {amount}")
             # call wrap function on the destinatino chain
-            dst_con.functions.wrap(token, recipient, amount).transact()
+            tx = dst_con.functions.wrap(token, recipient, amount).transact()
             #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
-            #w3_dst.eth.wait_for_transaction_receipt(tx)
+            w3_dst.eth.wait_for_transaction_receipt(tx)
 scanBlocks('source')
 scanBlocks('destination')
