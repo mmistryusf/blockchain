@@ -65,19 +65,21 @@ def scanBlocks(chain):
     src_con = w3_src.eth.contract(address = src_con_info['address'], abi = src_con_info['abi'])
     dst_con = w3_dst.eth.contract(address = dst_con_info['address'], abi = dst_con_info['abi'])    
 
-    end_block_src = w3_src.eth.block_number
-    end_block_dst = w3_dst.eth.block_number
+    end_block_src = w3_src.eth.get_block_number()
+    end_block_dst = w3_dst.eth.get_block_number()
+    
     start_block_src = end_block_src - 5 if end_block_src > 5 else 0
     start_block_dst = end_block_dst - 5 if end_block_dst > 5 else 0
     if chain == 'source':
-        events_data = src_con.events.Deposit.create_filter(fromBlock=start_block_src, toBlock=end_block_src).get_all_entries()
+        events_data = src_con.events.Deposit.create_filter(fromBlock=start_block_src, toBlock=end_block_src, argument_filters={}).get_all_entries()
+        print(f"event count: {len(events_data)}")
         for event in events_data:
             token = event['args']['token']
             recipient = event['args']['recipient']
             amount = event['args']['amount']
             print(f"Detected Deposit event: {token}, {recipient}, {amount}")
             # call wrap function on the destinatino chain
-            dst_con.functions.wrap(token, recipient, amount)
+            dst_con.functions.wrap(token, recipient, amount).transact()
             #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
             #w3_dst.eth.wait_for_transaction_receipt(tx)
 scanBlocks('source')
