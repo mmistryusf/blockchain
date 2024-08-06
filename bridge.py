@@ -70,7 +70,7 @@ def scanBlocks(chain):
 
     warden_key = contracts["warden"]   
     
-    account = w3_src.eth.account.from_key(warden_key)
+    account = w3_dst.eth.account.from_key(warden_key)
     
     #contract_info = getContractInfo(chain)
     src_con_info = getContractInfo('source')
@@ -96,7 +96,7 @@ def scanBlocks(chain):
             tx = dst_con.functions.wrap(token, recipient, amount).build_transaction({
                 'chainId':97,
                 'gas': 2000000,
-                'gasPrice': w3_dst.to_wei('5','gwei'),
+                'gasPrice': w3_dst.eth.gas_price, # w3_dst.to_wei('5','gwei'),
                 'nonce': w3_dst.eth.get_transaction_count(account.address)
             })
             
