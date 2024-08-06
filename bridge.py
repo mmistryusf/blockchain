@@ -71,7 +71,7 @@ def scanBlocks(chain):
     warden_key = contracts["warden"]   
     
     account = w3_src.eth.account.from_key(warden_key)
-    print(account)
+    
     #contract_info = getContractInfo(chain)
     src_con_info = getContractInfo('source')
     dst_con_info = getContractInfo('destination')
@@ -100,11 +100,10 @@ def scanBlocks(chain):
                 'nonce': w3_dst.eth.get_transaction_count(account.address)
             })
             
-            signed_tx = w3_dst.eth.account.sign_transaction(tx, private_key= warden_key)
-            #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
+            signed_tx = w3_dst.eth.account.sign_transaction(tx, private_key= warden_key)            
             tx_hash = w3_dst.eth.send_raw_transaction(signed_tx.rawTransaction)
             txn_receipt = w3_dst.eth.wait_for_transaction_receipt(tx_hash)
-            print("Transaction receipt:" , txn_receipt)
+            print("Transaction wrap:" , txn_receipt)
             
     else:
         events_data = dst_con.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock = end_block_dst, argument_filters={}).get_all_entries()
@@ -115,8 +114,15 @@ def scanBlocks(chain):
             amount = event['args']['amount']
             print(f"Detected Unwrap event: {token}, {recipient}, {amount}")
             # call wrap function on the destinatino chain
-            tx = src_con.functions.withdraw(token, recipient, amount).transact()
-            #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
-            w3_wrc.eth.wait_for_transaction_receipt(tx)
+            tx = src_con.functions.withdraw(token, recipient, amount).build_transaction({
+                'chainId':43113,
+                'gas':2000000,
+                'gasPrice': w3_src.to_wei('30', 'gwei'),
+                'nonce':w3_src.eth.get_transaction_count(account.address)
+            })
+            signed_tx = w3_src.eth.account.sign_transaction(tx, private_key= warden_key)            
+            tx_hash = w3_src.eth.send_raw_transaction(signed_tx.rawTransaction)
+            txn_receipt = w3_src.eth.wait_for_transaction_receipt(tx_hash)
+            print("Transaction Withdraw:" , txn_receipt)
 scanBlocks('source')
 scanBlocks('destination')
