@@ -95,12 +95,15 @@ def scanBlocks(chain):
             tx = dst_con.functions.wrap(token, recipient, amount).build_transaction({
                 'chainId':97,
                 'gas': 2000000,
-                'gasPrice': w3_dst.toWei('5','gwei'),
+                'gasPrice': w3_dst.to_wei('5','gwei'),
                 'nonce': w3_dst.eth.get_transaction_count(w3_dst.eth.default_account)
             })
             signed_tx = w3_dst.eth.account.sign_transation(tx, private_key= warden_key)
             #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
-            w3_dst.eth.send_raw_transaction(signed_tx.rawTransaction)
+            tx_hash = w3_dst.eth.send_raw_transaction(signed_tx.rawTransaction)
+            txn_receipt = w3_dst.eth.wait_for_transaction_receipt(tx_hash)
+            print("Transaction receipt:" , txn_receipt)
+            
     else:
         events_data = dst_con.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock = end_block_dst, argument_filters={}).get_all_entries()
         
