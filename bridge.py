@@ -58,7 +58,7 @@ def scanBlocks(chain):
     w3_src = connectTo('avax')
     w3_dst = connectTo('bsc')
 
-    contract_info = getContractInfo(chain)
+    #contract_info = getContractInfo(chain)
     src_con_info = getContractInfo('source')
     dst_con_info = getContractInfo('destination')
 
