@@ -70,7 +70,7 @@ def scanBlocks(chain):
 
     warden_key = contracts["warden"]   
     
-    account = w3_dst.eth.account.from_key(warden_key)
+    account = w3_src.eth.account.from_key(warden_key)
     
     #contract_info = getContractInfo(chain)
     src_con_info = getContractInfo('source')
