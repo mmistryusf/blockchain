@@ -109,8 +109,8 @@ def scanBlocks(chain):
         events_data = dst_con.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock = end_block_dst, argument_filters={}).get_all_entries()
         
         for event in events_data:
-            token = event['args']['wrapped_token']
-            recipient = event['args']['recipient']
+            token = event['args']['underlying_token']
+            recipient = event['args']['to']
             amount = event['args']['amount']
             print(f"Detected Unwrap event: {token}, {recipient}, {amount}")
             # call wrap function on the destinatino chain
