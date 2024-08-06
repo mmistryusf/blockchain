@@ -58,6 +58,19 @@ def scanBlocks(chain):
     w3_src = connectTo('avax')
     w3_dst = connectTo('bsc')
 
+    p = Path(__file__).with_name(contract_info)
+    try:
+        with p.open('r')  as f:
+            contracts = json.load(f)
+    except Exception as e:
+        print( "Failed to read contract info" )
+        print( "Please contact your instructor" )
+        print( e )
+        sys.exit(1)
+
+    warden_key = contracts["warden"]   
+    
+
     #contract_info = getContractInfo(chain)
     src_con_info = getContractInfo('source')
     dst_con_info = getContractInfo('destination')
@@ -79,9 +92,15 @@ def scanBlocks(chain):
             amount = event['args']['amount']
             print(f"Detected Deposit event: {token}, {recipient}, {amount}")
             # call wrap function on the destinatino chain
-            tx = dst_con.functions.wrap(token, recipient, amount).transact()
+            tx = dst_con.functions.wrap(token, recipient, amount).build_transaction({
+                'chainId':97,
+                'gas': 2000000,
+                'gasPrice': w3_dst.toWei('5','gwei'),
+                'nonce': w3_dst.eth.get_transaction_count(w3_dst.eth.default_account)
+            })
+            signed_tx = w3_dst.eth.account.sign_transation(tx, private_key= warden_key)
             #tx = dst_con.functions.wrap(token, recipient, amount).transact({'from':w3_dst.eth.accounts[0]})
-            w3_dst.eth.wait_for_transaction_receipt(tx)
+            w3_dst.eth.send_raw_transaction(signed_tx.rawTransaction)
     else:
         events_data = dst_con.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock = end_block_dst, argument_filters={}).get_all_entries()
         
